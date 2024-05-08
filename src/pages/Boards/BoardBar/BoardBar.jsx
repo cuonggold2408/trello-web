@@ -11,6 +11,7 @@ import { Tooltip } from "@mui/material";
 import avatarIcon from "~/assets/images/avatar.png";
 import Button from "@mui/material/Button";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
+import { capitalizeFirstLetter } from "~/utils/formatters";
 
 const TRELLO_MENU_STYLES = {
   color: "white",
@@ -26,7 +27,7 @@ const TRELLO_MENU_STYLES = {
   },
 };
 
-export default function BoardBar() {
+export default function BoardBar({ board }) {
   return (
     <Box
       sx={{
@@ -46,13 +47,13 @@ export default function BoardBar() {
         <Chip
           sx={TRELLO_MENU_STYLES}
           icon={<DashboardIcon />}
-          label="CuongNguyen-Devhogquao"
+          label={board?.title}
           clickable
         />
         <Chip
           sx={TRELLO_MENU_STYLES}
           icon={<VpnLockIcon />}
-          label="Public/Private Workspace"
+          label={capitalizeFirstLetter(board?.type)}
           clickable
         />
         <Chip

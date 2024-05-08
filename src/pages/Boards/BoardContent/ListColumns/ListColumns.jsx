@@ -3,7 +3,7 @@ import Column from "./Column/Column";
 import Button from "@mui/material/Button";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
 
-export default function ListColumns() {
+export default function ListColumns({ columns }) {
   return (
     <Box
       sx={{
@@ -18,7 +18,9 @@ export default function ListColumns() {
         },
       }}
     >
-      <Column />
+      {columns?.map((column) => (
+        <Column key={column._id} column={column} />
+      ))}
 
       {/* Box thêm cột */}
       <Box
