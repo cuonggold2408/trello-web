@@ -2,13 +2,34 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import GroupIcon from "@mui/icons-material/Group";
-import CommentIcon from "@mui/icons-material/Comment";
-import AttachmentIcon from "@mui/icons-material/Attachment";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Card as MuiCard } from "@mui/material";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 export default function Card({ card }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: card._id, data: { ...card } });
+
+  const dndKitCardStyle = {
+    touchAction: "none",
+    /**
+     * Dùng translate thay vì transform
+     * https://github.com/clauderic/dnd-kit/issues/117
+     */
+    transform: CSS.Translate.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    border: isDragging ? "1px solid #3498db" : undefined,
+  };
+
   const shouldShowCardActions = () => {
     return (
       !!card?.memberIds?.length ||
@@ -19,10 +40,15 @@ export default function Card({ card }) {
 
   return (
     <MuiCard
+      ref={setNodeRef}
+      style={dndKitCardStyle}
+      {...attributes}
+      {...listeners}
       sx={{
         cursor: "pointer",
         boxShadow: "0 1px 1px rgba(0,0,0,0.2)",
         overflow: "unset",
+        display: card?.FE_PlaceholderCard ? "none" : "block",
       }}
     >
       {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover} />}
