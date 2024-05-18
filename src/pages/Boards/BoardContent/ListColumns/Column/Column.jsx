@@ -22,6 +22,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { mapOrder } from "~/utils/sorts";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import showToast from "~/utils/Toastify";
 
 export default function Column({ column }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -65,7 +66,7 @@ export default function Column({ column }) {
 
   const addNewCard = () => {
     if (!newCardTitle) {
-      console.log("Card title is required");
+      showToast("error", "Card title is required");
       return;
     }
     console.log("newCardTitle", newCardTitle);
@@ -215,6 +216,7 @@ export default function Column({ column }) {
                 size="small"
                 variant="outlined"
                 autoFocus
+                data-no-dnd="true"
                 value={newCardTitle}
                 onChange={(e) => setNewCardTitle(e.target.value)}
                 sx={{
