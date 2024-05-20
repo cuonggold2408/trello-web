@@ -10,8 +10,14 @@ import {
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { useState } from "react";
+import showToast from "~/utils/Toastify";
 
-export default function ListColumns({ columns }) {
+export default function ListColumns({
+  columns,
+  createNewColumn,
+  createNewCard,
+  deleteColumnDetails,
+}) {
   /**
    * SortableContext: yêu cầu items là 1 mảng ["1", "2", "3"], not [{id: "1"}, {id: "2}, {id: "3}]
    * Nếu không đúng như vậy thì vẫn kéo thả được nhưng mà nó ko có hiệu ứng animation
@@ -24,12 +30,17 @@ export default function ListColumns({ columns }) {
 
   const [newColumnTitle, setNewColumnTitle] = useState("");
 
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColumnTitle) {
-      console.log("Column title is required");
+      showToast("error", "Tên Column không được để trống", "BOTTOM_LEFT");
       return;
     }
-    console.log("newColumnTitle", newColumnTitle);
+
+    const newColumnData = {
+      title: newColumnTitle,
+    };
+
+    await createNewColumn(newColumnData);
 
     toggleOpenNewColumnForm();
     setNewColumnTitle("");
@@ -54,7 +65,12 @@ export default function ListColumns({ columns }) {
         }}
       >
         {columns?.map((column) => (
-          <Column key={column._id} column={column} />
+          <Column
+            key={column._id}
+            column={column}
+            createNewCard={createNewCard}
+            deleteColumnDetails={deleteColumnDetails}
+          />
         ))}
 
         {/* Box thêm cột */}

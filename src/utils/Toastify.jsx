@@ -1,31 +1,30 @@
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const showToast = (type, message, callback) => {
+const showToast = (type, message, positionToast = "TOP_RIGHT", callback) => {
   switch (type) {
     case "success":
       toast.success(message, {
-        position: toast.POSITION.TOP_RIGHT,
+        position: toast.POSITION[positionToast],
         autoClose: 3000,
       });
       break;
     case "warn":
       toast.warn(message, {
-        position: toast.POSITION.TOP_RIGHT,
+        position: toast.POSITION[positionToast],
         autoClose: 3000,
         onClose: callback,
       });
       break;
     case "error":
       toast.error(message, {
-        position: toast.POSITION.TOP_RIGHT,
+        position: toast.POSITION[positionToast],
         autoClose: 3000,
-        theme: "colored",
       });
       break;
     case "info":
       toast.info(message, {
-        position: toast.POSITION.TOP_RIGHT,
+        position: toast.POSITION[positionToast],
         autoClose: 3000,
       });
       break;
@@ -44,14 +43,14 @@ const showToast = (type, message, callback) => {
           </button>
         </div>,
         {
-          position: toast.POSITION.TOP_RIGHT,
+          position: toast.POSITION[positionToast],
           autoClose: false, // Không tự đóng để chờ người dùng nhấn nút
         }
       );
       break;
     default:
       toast(message, {
-        position: toast.POSITION.TOP_RIGHT,
+        position: toast.POSITION[positionToast],
         autoClose: 3000,
       });
       break;

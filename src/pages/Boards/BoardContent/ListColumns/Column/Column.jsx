@@ -23,8 +23,9 @@ import { mapOrder } from "~/utils/sorts";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import showToast from "~/utils/Toastify";
+import { useConfirm } from "material-ui-confirm";
 
-export default function Column({ column }) {
+export default function Column({ column, createNewCard, deleteColumnDetails }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -57,22 +58,44 @@ export default function Column({ column }) {
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, "_id");
+  // Vì dữ liệu card đã được sắp xếp ở component cha nên không cần sắp xếp lại ở đây
+  const orderedCards = column.cards;
 
   const [openNewCardForm, setOpenNewCardForm] = useState(false);
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm);
 
   const [newCardTitle, setNewCardTitle] = useState("");
 
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
-      showToast("error", "Card title is required");
+      showToast("error", "Title của card không được để trống", "BOTTOM_LEFT");
       return;
     }
-    console.log("newCardTitle", newCardTitle);
+
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id,
+    };
+
+    await createNewCard(newCardData);
 
     toggleOpenNewCardForm();
     setNewCardTitle("");
+  };
+
+  const confirmDeleteColumn = useConfirm();
+  // Xóa column
+  const handleDeleteColumn = () => {
+    confirmDeleteColumn({
+      description:
+        "Bạn có chắn chắn muốn xóa column này và tất cả các card trong column không?",
+    })
+      .then(() => {
+        deleteColumnDetails(column._id);
+      })
+      .catch(() => {
+        // console.log("Cancel delete column");
+      });
   };
 
   return (
@@ -127,13 +150,24 @@ export default function Column({ column }) {
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
+              onClick={handleClose}
               MenuListProps={{
                 "aria-labelledby": "basic-column-dropdown",
               }}
             >
-              <MenuItem>
+              <MenuItem
+                onClick={toggleOpenNewCardForm}
+                sx={{
+                  "&:hover": {
+                    color: "primary.main",
+                    "& .add-card-icon": {
+                      color: "primary.main",
+                    },
+                  },
+                }}
+              >
                 <ListItemIcon>
-                  <AddCardIcon fontSize="small" />
+                  <AddCardIcon className="add-card-icon" fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Add new card</ListItemText>
               </MenuItem>
@@ -156,17 +190,30 @@ export default function Column({ column }) {
                 <ListItemText>Paste</ListItemText>
               </MenuItem>
               <Divider />
+              <MenuItem
+                onClick={handleDeleteColumn}
+                sx={{
+                  "&:hover": {
+                    color: "warning.dark",
+                    "& .delete-forever-icon": {
+                      color: "warning.dark",
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon>
+                  <DeleteForeverIcon
+                    className="delete-forever-icon"
+                    fontSize="small"
+                  />
+                </ListItemIcon>
+                <ListItemText>Delete this column</ListItemText>
+              </MenuItem>
               <MenuItem>
                 <ListItemIcon>
                   <Cloud fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Archive this column</ListItemText>
-              </MenuItem>
-              <MenuItem>
-                <ListItemIcon>
-                  <DeleteForeverIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Remove this column</ListItemText>
               </MenuItem>
             </Menu>
           </Box>

@@ -8,12 +8,24 @@ import theme from "./theme";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Cấu hình MUI Dialog
+import { ConfirmProvider } from "material-ui-confirm";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <CssVarsProvider theme={theme}>
+  // <React.StrictMode>
+  <CssVarsProvider theme={theme}>
+    <ConfirmProvider
+      defaultOptions={{
+        title: "Xác nhận",
+        confirmationText: "Confirm",
+        cancellationText: "Cancel",
+        buttonOrder: ["confirm", "cancel"],
+      }}
+    >
       <CssBaseline />
       <App />
-      <ToastContainer />
-    </CssVarsProvider>
-  </React.StrictMode>
+      <ToastContainer theme="colored" />
+    </ConfirmProvider>
+  </CssVarsProvider>
+  // </React.StrictMode>
 );
