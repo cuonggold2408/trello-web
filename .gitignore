@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+/src/apis/mock-data.js
+/src/utils/sorts.js
